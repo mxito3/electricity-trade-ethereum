@@ -3,3 +3,9 @@ trade_elec/mysite/__pycache__/
 trade_elec/mysite/core/migrations/ 
 trade_elec/mysite/core/__pycache__/ 
 trade_elec/db.sqlite3
+trade_elec/chain/data/geth/chaindata/ 
+trade_elec/chain/data/geth/lightchaindata/ 
+trade_elec/chain/data/geth/LOCK
+trade_elec/chain/data/geth/nodes/
+trade_elec/chain/data/geth/nodekey
+trade_elec/ethereum/__pycache__/
