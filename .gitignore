@@ -1,0 +1,5 @@
+venv/
+trade_elec/mysite/__pycache__/ 
+trade_elec/mysite/core/migrations/ 
+trade_elec/mysite/core/__pycache__/ 
+trade_elec/db.sqlite3
