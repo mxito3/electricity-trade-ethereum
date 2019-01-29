@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>trade site</title>
+</head>
+<body>
+    <!-- {{ sellingDetails }} -->
+    <h1>电量交易</h1>
+    {% for index in sellingDetails %}
+        <div class="{{ index }}">
+             {% for item in sellingDetails.get(index) %}
+                <div id="{{loop.counter}}" style="position: relative; margin-bottom: 10px;border:solid 1px black;float: left;"> 
+                    卖家id:{{index}}<br/>
+                    出售数量：{{item[0]}} <br/>
+                    价格：{{item[1]}} elecCoin/度 <br/>
+                    收款地址：{{item[2]}}
+                </div>
+             {% endfor %}
+        </div>
+    {% endfor %}
+</body>
+</html>

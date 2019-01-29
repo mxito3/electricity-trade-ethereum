@@ -1,0 +1,15 @@
+CREATE TABLE `user` (
+  `id` varchar(200) NOT NULL,
+  `userName` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `address` varchar(42) NOT NULL,
+  PRIMARY KEY (`id`)
+)CHARSET=utf8;
+
+CREATE TABLE `admin` (
+  `id` varchar(200) NOT NULL,
+  `userName` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+)CHARSET=utf8;
+

@@ -122,7 +122,7 @@ contract TokenERC20 {
         return true;
     }
 
-  	//销毁授权的币
+    //销毁授权的币
     function burnFrom(address _from, uint256 _value) public returns (bool success) {
         require(balanceOf[_from] >= _value);               
         require(_value <= allowance[_from][msg.sender]);   
@@ -156,7 +156,7 @@ contract MyAdvancedToken is owned, TokenERC20
         string tokenSymbol
     ) TokenERC20(initialSupply, tokenName, tokenSymbol) public {}
 
-	//转币
+    //转币
     function _transfer(address _from, address _to, uint _value) internal {
         require (_to != 0x0);                               // Prevent transfer to 0x0 address. Use burn() instead
         require (balanceOf[_from] >= _value);               // Check if the sender has enough
@@ -256,12 +256,11 @@ contract MyAdvancedToken is owned, TokenERC20
 
 /**
  * The electr contract does this and that...
- 	
+    
  */
-contract electr is owned {	
+contract electr is owned {  
     mapping(uint256 => bool) public isUser; 
     mapping(uint256 => uint256 ) public balance;
-   
     event TransferElec(uint256 indexed from, uint256 indexed to, uint256 value);
     modifier existSuchUser(uint256 userId)
     {
@@ -276,7 +275,7 @@ contract electr is owned {
     {
         if (!isUser[userId])   //判断user是否存在
         {
-            isUser[userId] = true;
+            addUser(userId);
         }
         balance[userId] = amount;
     }
@@ -299,13 +298,15 @@ contract electr is owned {
         assert(balance[_from] + balance[_to] == previousBalances);
     }
     
+    
 }
 
 
 contract tradeElec is electr,MyAdvancedToken
 {
     
-     mapping(uint256 => uint256) public announceCount;
+    mapping(uint256 => uint256) public announceCount;
+    uint256[] public sellingsOwner;
     // electr electrisity;
     function tradeElec(
         uint256 initialSupply,
@@ -328,6 +329,7 @@ contract tradeElec is electr,MyAdvancedToken
         {
             sellingElec[userId] [index] = sellCell(value,price,msg.sender);
              announceCount[userId] += 1;
+             sellingsOwner.push(userId);
         }
         
     }
@@ -344,5 +346,8 @@ contract tradeElec is electr,MyAdvancedToken
             sellingElec[sellerId][index].value -= value;
         }
 
+    }
+    function getSellingOwner () public  view returns(uint256 res)  { //获得出售委托订单的主人
+        return sellingsOwner.length;
     }
 }

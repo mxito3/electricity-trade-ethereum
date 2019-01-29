@@ -1,0 +1,6 @@
+cd /home/yapie/github/video_player/chain && geth --rpc --rpccorsdomain "*"  --rpcapi "admin,clique,debug,eth,miner,net,personal,rpc,txpool,web3" --rpcport 8545 --datadir ./data --nodiscover
+
+
+geth attach http://localhost:8545
+
+
