@@ -1,6 +1,18 @@
-cd /home/yapie/github/video_player/chain && geth --rpc --rpccorsdomain "*"  --rpcapi "admin,clique,debug,eth,miner,net,personal,rpc,txpool,web3" --rpcport 8545 --datadir ./data --nodiscover
+cd /home/yapie/github/electricity-trade-ethereum/chain && geth --rpc --rpccorsdomain "*"  --rpcapi "admin,clique,debug,eth,miner,net,personal,rpc,txpool,web3" --rpcport 8545 --datadir ./data 
 
 
 geth attach http://localhost:8545
 
+
+personal.unlockAccount(eth.coinbase,"123456")
+
+
+admin.addPeer("enode://0a56b96c28029343e4ca3722b62ba28b4ce8a4befecb38dc6a0f7660b84bcefe4e16ceb77ecc4b77630864cdb4705ba1d73877230b26e5b3dba39cd0f3bdeda4@192.168.2.104:3333")
+
+
+
+cd /home/yapie/github/electricity-trade-ethereum/chain && geth --rpc --rpccorsdomain "*"  --rpcapi "admin,clique,debug,eth,miner,net,personal,rpc,txpool,web3" --rpcport 8546 --port 3333 --datadir ./data1 
+
+
+admin.addPeer("enode://b485ad2b1b3eacae113cec56b74e8f797c553c26365c40dfc466a0d3849ba096ecf9099eeddee924f5ec877a8ffcb7602e5cf2ba857f7af8a3bed19c16e579e3@192.168.2.104:30303")
 

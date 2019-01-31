@@ -10,5 +10,6 @@ trade_elec/chain/data/geth/nodes/
 trade_elec/chain/data/geth/nodekey
 trade_elec/ethereum/__pycache__/
 config/__pycache__/
-chain/data/geth/chaindata/
-chain/data/geth/lightchaindata/
+chain/data/geth/
+chain/data/keystore/
+chain/data1/

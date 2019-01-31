@@ -1,8 +1,9 @@
-from flask import Flask,render_template,url_for,request,redirect,flash,request,session,make_response
+from flask import Flask,render_template,url_for,request,redirect,flash,request,session,make_response,jsonify
 from config.sql import Sql
 from pathlib import Path
 from config.user import User
 from config.ethereum import ethereumUtil
+from ast import literal_eval
 import os
 import time
 import datetime
@@ -20,8 +21,10 @@ etherUtil = ethereumUtil()
 
 @app.route('/')
 def index():
-    sellingDetails = etherUtil.getSellingDetail()
-    return render_template('index.html',sellingDetails = sellingDetails)
+    print(request.cookies.get('session_id'))
+    sellingDetails = etherUtil.getSellingDetail()            
+    return render_template('index.html',sellingDetails=sellingDetails)
+
 @app.route('/admin')
 def admin():
     if globalCookie == request.cookies.get('session_id'):
@@ -39,24 +42,35 @@ def signIn():
         if  userOperator.existSuchUser(user_name,user_password):
             if user_name == 'admin':
                 response=make_response(redirect('/admin'))
+                userId  = userOperator.getId(user_name,user_password)
                 response.set_cookie('session_id',globalCookie)
                 return response
             else:
-                user = userOperator.getUser(user_name,user_password)
-                userInfo = {}
-                userInfo["id"] = int(user[0][0])
-                userInfo["address"] = user[0][1]
-                userInfo["userName"] = user_name
-                userInfo["balance"] = etherUtil.getElectricityAmount(userInfo["id"])
-                userInfo["coinBalance"] = etherUtil.getCoinBalance(userInfo["addreess"])
-                response=make_response(render_template('personal.html',user=userInfo))
-                response.set_cookie('session',globalCookie)                
+                userInfo = userOperator.getUser(user_name,user_password)
+                response = make_response(redirect(url_for('index')))
+                userId = userInfo.get('id')
+                temp = userOperator.getSessionId(userId)
+                sessionId =""
+                if temp == "":
+                    sessionId = uuid.uuid4().toString()
+                    userOperator.setSessionId(userId,sessionId)
+                else:
+                    sessionId = temp
+                response.set_cookie('session_id',sessionId)
                 return response
+ 
         else:
             flash("用户名密码不匹配")
             return render_template('login.html')
     else:
         return render_template('login.html')
+
+@app.route('/found/<user>/<sellingDetails>')
+def found(user,sellingDetails):
+    print(request.cookies.get('session_id'))
+    sellingDetails=literal_eval(sellingDetails)
+    user = literal_eval(user)
+    return render_template('index.html',user=user,sellingDetails=sellingDetails)
 
 @app.route('/signup',methods=['Post','GET'])
 def signUp():
@@ -80,6 +94,20 @@ def uploadElec():
         return redirect('/')
     else:
         return "没有权限上传"
+
+@app.route('/api/userWhetherLogin',methods=['Post','GET'])
+def test():
+    if globalCookie == request.cookies.get('session_id'):
+        return "1"
+    else:
+        return "0"
+
+@app.route('/api/user/<id>',methods = ['GET'])
+def getUserInfo(id):
+    userInfo = userOperator.getUserById(id)
+    return jsonify(userInfo)
+   
+                 
 if __name__=="__main__":
     app.run(host='0.0.0.0',threaded=True,debug=True,port=8080)
 

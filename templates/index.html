@@ -4,6 +4,8 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>trade site</title>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
 </head>
 <body>
     <!-- {{ sellingDetails }} -->
@@ -11,14 +13,47 @@
     {% for index in sellingDetails %}
         <div class="{{ index }}">
              {% for item in sellingDetails.get(index) %}
-                <div id="{{loop.counter}}" style="position: relative; margin-bottom: 10px;border:solid 1px black;float: left;"> 
+                <div id="{{loop.counter}}" style="position: relative; margin-bottom: 10px;border:solid 1px black;float: left; margin-right: 3px;"> 
                     卖家id:{{index}}<br/>
                     出售数量：{{item[0]}} <br/>
                     价格：{{item[1]}} elecCoin/度 <br/>
                     收款地址：{{item[2]}}
+                    <button class="btn">购买</button>
                 </div>
              {% endfor %}
         </div>
     {% endfor %}
+
+    {% if user %}
+    <span>userName: </span> {{user.get("userName")}}<br/>
+    <span>SystemID: </span>{{user.get("id")}}<br/>
+    <span>电力系统ID: </span>{{user.get("elecId")}}<br/>
+    <span>充币地址: </span>{{user.get("address")}}<br/>
+    <span>电力余额: </span>{{user.get("balance")}}<br/>
+    <span>elec币余额: </span>{{user.get("coinBalance")}}<br/>
+    {% endif %}
+
+    <!-- 弹框底层蒙版 -->
+    <div class="mask">
+    </div>
+     
+    <!-- 弹框-->
+     
+    <div class="bomb_box">
+        <h4>购买</h4>
+        <form action="/api/userWhetherLogin" method="post">
+            <span>购买数量: </span><input type="text" name="" id="">
+            <button>购买</button>
+        </form>
+    </div>
+     
+    <!-- 弹框的js -->
+    <script type="text/javascript">
+     
+    $(".btn").click(function(){
+        $(".mask").show();
+        $(".bomb_box").show();
+    })
+    </script>
 </body>
 </html>
