@@ -42,4 +42,4 @@ if __name__ == "__main__":
     
     index = 0 #第一个委托
     amount = 2 #买两度电
-    # ethUtil.buyElectricity(buyerAddress,buyerPassword,buyerId,sellerId,index,amount)
+    ethUtil.buyElectricity(buyerAddress,buyerPassword,buyerId,sellerId,index,amount)

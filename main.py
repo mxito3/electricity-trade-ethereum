@@ -21,7 +21,7 @@ etherUtil = ethereumUtil()
 
 @app.route('/')
 def index():
-    print(request.cookies.get('session_id'))
+    # print(request.cookies.get('session_id'))
     sellingDetails = etherUtil.getSellingDetail()            
     return render_template('index.html',sellingDetails=sellingDetails)
 
@@ -49,13 +49,15 @@ def signIn():
                 userInfo = userOperator.getUser(user_name,user_password)
                 response = make_response(redirect(url_for('index')))
                 userId = userInfo.get('id')
+                print("userId %s" %(userId))
                 temp = userOperator.getSessionId(userId)
                 sessionId =""
                 if temp == "":
-                    sessionId = uuid.uuid4().toString()
+                    sessionId = str(uuid.uuid4())
                     userOperator.setSessionId(userId,sessionId)
                 else:
                     sessionId = temp
+                print("sessionId %s" %(sessionId))
                 response.set_cookie('session_id',sessionId)
                 return response
  
@@ -67,7 +69,7 @@ def signIn():
 
 @app.route('/found/<user>/<sellingDetails>')
 def found(user,sellingDetails):
-    print(request.cookies.get('session_id'))
+    # print(request.cookies.get('session_id'))
     sellingDetails=literal_eval(sellingDetails)
     user = literal_eval(user)
     return render_template('index.html',user=user,sellingDetails=sellingDetails)
@@ -102,12 +104,26 @@ def test():
     else:
         return "0"
 
-@app.route('/api/user/<id>',methods = ['GET'])
-def getUserInfo(id):
+@app.route('/api/user/<sessionId>',methods = ['GET'])
+def getUserInfo(sessionId):
+    id = userOperator.getIdByCookie(sessionId)
     userInfo = userOperator.getUserById(id)
     return jsonify(userInfo)
    
-                 
+@app.route('/api/elect/transaction',methods = ['Post'])
+def transact():
+    form=request.form
+    buyerAddress=form.get('buyerAddress')
+    buyerPassword = form.get('buyerPassword')
+    buyerId = form.get('buyerId')
+    sellerId =form.get('sellerId')
+    index=int(form.get('index'))
+    amount=int(form.get('amount'))
+    print("%s %s %s　%s　%s　%s"%(buyerAddress,buyerPassword,buyerId,sellerId,index,amount))
+    # etherUtil.buyElectricity(buyerAddress,buyerPassword,buyerId,sellerId,index,amount)
+
+    return jsonify(index)
+ 
 if __name__=="__main__":
     app.run(host='0.0.0.0',threaded=True,debug=True,port=8080)
 

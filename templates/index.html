@@ -6,6 +6,8 @@
     <title>trade site</title>
     <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <script src="{{ url_for('static',filename='js/index.js')}}"></script>
+    <script src="{{ url_for('static',filename='js/jquery.cookie.js')}}"></script>
 </head>
 <body>
     <!-- {{ sellingDetails }} -->
@@ -13,12 +15,12 @@
     {% for index in sellingDetails %}
         <div class="{{ index }}">
              {% for item in sellingDetails.get(index) %}
-                <div id="{{loop.counter}}" style="position: relative; margin-bottom: 10px;border:solid 1px black;float: left; margin-right: 3px;"> 
-                    卖家id:{{index}}<br/>
-                    出售数量：{{item[0]}} <br/>
-                    价格：{{item[1]}} elecCoin/度 <br/>
-                    收款地址：{{item[2]}}
-                    <button class="btn">购买</button>
+                <div id="{{loop.index}}" style="position: relative; margin-bottom: 10px;border:solid 1px black;float: left; margin-right: 3px;"> 
+                    <p id="{{index}}-{{loop.index}}1" value="{{index}}">卖家id:<strong>{{index}}</strong></p><br/>
+                    <p id="{{index}}-{{loop.index}}2" value="{{item[0]}}">出售数量：<strong>{{item[0]}}</strong></p> <br/>
+                    <p id="{{index}}-{{loop.index}}3" value="{{item[1]}}">价格：<strong>{{item[1]}}</strong> elecCoin/度 </p><br/>
+                    <p id="{{index}}-{{loop.index}}4" value="{{item[2]}}">收款地址：<strong>{{item[2]}}</strong></p>
+                    <button class="btn" id="{{index}}-{{loop.index}}" >购买</button>
                 </div>
              {% endfor %}
         </div>
@@ -42,18 +44,9 @@
     <div class="bomb_box">
         <h4>购买</h4>
         <form action="/api/userWhetherLogin" method="post">
-            <span>购买数量: </span><input type="text" name="" id="">
-            <button>购买</button>
+            <span>购买数量: </span><input type="text" name="" id="buyAmount">
+            <button id="buyButton">购买</button>
         </form>
     </div>
-     
-    <!-- 弹框的js -->
-    <script type="text/javascript">
-     
-    $(".btn").click(function(){
-        $(".mask").show();
-        $(".bomb_box").show();
-    })
-    </script>
 </body>
 </html>

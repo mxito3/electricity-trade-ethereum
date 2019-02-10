@@ -18,7 +18,7 @@ class User(object):
             return False
         
         if result[0][0] == password:
-            print("in true")
+            # print("in true")
             return True
         else:
             return False
@@ -51,14 +51,24 @@ class User(object):
         return userInfo
     def setSessionId(self,id,sessionId):
         self.sql.connect()
-
         command = 'insert into sessionId (id,sessionId) values ("%s","%s")' % (id,sessionId)
         self.sql.extractSql(command)
 
     def getSessionId(self,id):
         self.sql.connect()
-        command = 'select  * from sessionId where id="%s"'  % (id)
+        command = 'select  sessionId from sessionId where id="%s"'  % (id)
         result = self.sql.extractSql(command)
+        if len(result)==0:
+            return ""
+        else:
+            return result[0][0]
+    def getIdByCookie(self,cookie):
+        # print("in getIdByCookie")
+        self.sql.connect()
+        command = 'select id from sessionId where sessionId="%s"'  % (cookie)
+        result = self.sql.extractSql(command)
+        # print(cookie)
+        # print(result)
         if len(result)==0:
             return ""
         else:
