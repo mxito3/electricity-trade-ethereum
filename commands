@@ -16,3 +16,6 @@ cd /home/yapie/github/electricity-trade-ethereum/chain && geth --rpc --rpccorsdo
 
 admin.addPeer("enode://b485ad2b1b3eacae113cec56b74e8f797c553c26365c40dfc466a0d3849ba096ecf9099eeddee924f5ec877a8ffcb7602e5cf2ba857f7af8a3bed19c16e579e3@192.168.2.104:30303")
 
+
+
+eth.sendTransaction({"from":eth.coinbase,"to":"0x8273fc3E21E561750C8765dd3659bFA7b639b25c","value":100000000000000000000})

@@ -1,4 +1,4 @@
-from flask import Flask,render_template,url_for,request,redirect,flash,request,session,make_response,jsonify
+from flask import Flask, render_template, url_for, request, redirect, flash, request, session, make_response, jsonify
 from config.sql import Sql
 from pathlib import Path
 from config.user import User
@@ -10,21 +10,34 @@ import datetime
 import uuid
 import _thread
 import threading
-app=Flask(__name__)
-app.secret_key=bytes(str(uuid.uuid4()),'utf-8')
-uploadFloader='./static/upload'
-app.config['UPLOAD_FLODER']=uploadFloader
-sql=Sql("localhost",3306,'root','domore0325','elec')
+app = Flask(__name__)
+app.secret_key = bytes(str(uuid.uuid4()), 'utf-8')
+uploadFloader = './static/upload'
+app.config['UPLOAD_FLODER'] = uploadFloader
+sql = Sql("localhost", 3306, 'root', 'domore0325', 'elec')
 globalCookie = "ypisthebest"
-userOperator =User() 
+userOperator = User()
 etherUtil = ethereumUtil()
+
 
 @app.route('/')
 def index():
-    # print(request.cookies.get('session_id'))
-    sellingDetails = etherUtil.getSellingDetail()            
-    return render_template('index.html',sellingDetails=sellingDetails)
+    sessionId =request.cookies.get('session_id')
+    sellingDetails = etherUtil.getSellingDetail()
+    id = userOperator.getIdByCookie(sessionId)
+    userInfo = userOperator.getUserById(id)
+    return render_template('index.html', sellingDetails=sellingDetails,user=userInfo)
 
+
+@app.route('/personal')
+def personal():
+    sessionId =request.cookies.get('session_id')
+    id = userOperator.getIdByCookie(sessionId)
+    if id == "":
+        return redirect('/login')
+    else:
+        user = userOperator.getUserById(id)
+        return render_template("personal.html",user=user)
 @app.route('/admin')
 def admin():
     if globalCookie == request.cookies.get('session_id'):
@@ -33,98 +46,106 @@ def admin():
         flash("管理员请先登录")
         return redirect('/login')
 
-@app.route('/login',methods=['Post','GET'])
+
+@app.route('/login', methods=['Post', 'GET'])
 def signIn():
     if request.method == 'POST':
-        form=request.form
-        user_name=form.get('user_name')
-        user_password=form.get('user_password')
-        if  userOperator.existSuchUser(user_name,user_password):
+        form = request.form
+        user_name = form.get('user_name')
+        user_password = form.get('user_password')
+        if userOperator.existSuchUser(user_name, user_password):
             if user_name == 'admin':
-                response=make_response(redirect('/admin'))
-                userId  = userOperator.getId(user_name,user_password)
-                response.set_cookie('session_id',globalCookie)
+                response = make_response(redirect('/admin'))
+                userId = userOperator.getId(user_name, user_password)
+                response.set_cookie('session_id', globalCookie)
                 return response
             else:
-                userInfo = userOperator.getUser(user_name,user_password)
+                userInfo = userOperator.getUser(user_name, user_password)
                 response = make_response(redirect(url_for('index')))
                 userId = userInfo.get('id')
-                print("userId %s" %(userId))
+                print("userId %s" % (userId))
                 temp = userOperator.getSessionId(userId)
-                sessionId =""
+                sessionId = ""
                 if temp == "":
                     sessionId = str(uuid.uuid4())
-                    userOperator.setSessionId(userId,sessionId)
+                    userOperator.setSessionId(userId, sessionId)
                 else:
                     sessionId = temp
-                print("sessionId %s" %(sessionId))
-                response.set_cookie('session_id',sessionId)
+                print("sessionId %s" % (sessionId))
+                response.set_cookie('session_id', sessionId)
                 return response
- 
+
         else:
             flash("用户名密码不匹配")
             return render_template('login.html')
     else:
         return render_template('login.html')
 
-@app.route('/found/<user>/<sellingDetails>')
-def found(user,sellingDetails):
-    # print(request.cookies.get('session_id'))
-    sellingDetails=literal_eval(sellingDetails)
-    user = literal_eval(user)
-    return render_template('index.html',user=user,sellingDetails=sellingDetails)
 
-@app.route('/signup',methods=['Post','GET'])
+@app.route('/found/<user>/<sellingDetails>')
+def found(user, sellingDetails):
+    # print(request.cookies.get('session_id'))
+    sellingDetails = literal_eval(sellingDetails)
+    user = literal_eval(user)
+    return render_template('index.html', user=user, sellingDetails=sellingDetails)
+
+
+@app.route('/signup', methods=['Post', 'GET'])
 def signUp():
     if request.method == 'POST':
-        form=request.form
-        user_name=form.get('user_name')
-        user_password=form.get('user_password')
-        userOperator.createUser(user_name,user_password)
+        form = request.form
+        user_name = form.get('user_name')
+        user_password = form.get('user_password')
+        userOperator.createUser(user_name, user_password)
         return redirect("/login")
     else:
         return render_template('signup.html')
-        #注册页面
+        # 注册页面
 
-@app.route('/uploadElec',methods=['Post'])
+
+@app.route('/uploadElec', methods=['Post'])
 def uploadElec():
-    form = request.form 
+    form = request.form
     userId = form.get('userId')
     amount = form.get('amount')
     if globalCookie == request.cookies.get('session_id'):
-        etherUtil.uploadElec(int(userId),int(amount))
+        etherUtil.uploadElec(int(userId), int(amount))
         return redirect('/')
     else:
         return "没有权限上传"
 
-@app.route('/api/userWhetherLogin',methods=['Post','GET'])
+
+@app.route('/api/userWhetherLogin', methods=['Post', 'GET'])
 def test():
     if globalCookie == request.cookies.get('session_id'):
         return "1"
     else:
         return "0"
 
-@app.route('/api/user/<sessionId>',methods = ['GET'])
+
+@app.route('/api/user/<sessionId>', methods=['GET'])
 def getUserInfo(sessionId):
     id = userOperator.getIdByCookie(sessionId)
     userInfo = userOperator.getUserById(id)
     return jsonify(userInfo)
-   
-@app.route('/api/elect/transaction',methods = ['Post'])
+
+
+@app.route('/api/elect/transaction', methods=['Post'])
 def transact():
-    form=request.form
-    buyerAddress=form.get('buyerAddress')
+    form = request.form
+    buyerAddress = form.get('buyerAddress')
     buyerPassword = form.get('buyerPassword')
-    buyerId = form.get('buyerId')
-    sellerId =form.get('sellerId')
-    index=int(form.get('index'))
-    amount=int(form.get('amount'))
-    print("%s %s %s　%s　%s　%s"%(buyerAddress,buyerPassword,buyerId,sellerId,index,amount))
-    # etherUtil.buyElectricity(buyerAddress,buyerPassword,buyerId,sellerId,index,amount)
-
+    buyerId = int(form.get('buyerId'))
+    sellerId = int(form.get('sellerId'))
+    index = int(form.get('index'))
+    amount = int(form.get('amount'))
+    print("%s %s %s　%s　%s　%s" %
+          (buyerAddress, buyerPassword, buyerId, sellerId, index, amount))
+    etherUtil.buyElectricity(buyerAddress, buyerPassword,
+                             buyerId, sellerId, index, amount)
+    # buyerAddress,buyerPassword,buyerId,sellerId,index,amount
     return jsonify(index)
- 
-if __name__=="__main__":
-    app.run(host='0.0.0.0',threaded=True,debug=True,port=8080)
 
 
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', threaded=True, debug=True, port=8080)

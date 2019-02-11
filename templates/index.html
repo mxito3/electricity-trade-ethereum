@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,44 +10,67 @@
     <script src="{{ url_for('static',filename='js/index.js')}}"></script>
     <script src="{{ url_for('static',filename='js/jquery.cookie.js')}}"></script>
 </head>
+
 <body>
     <!-- {{ sellingDetails }} -->
-    <h1>电量交易</h1>
-    {% for index in sellingDetails %}
-        <div class="{{ index }}">
-             {% for item in sellingDetails.get(index) %}
-                <div id="{{loop.index}}" style="position: relative; margin-bottom: 10px;border:solid 1px black;float: left; margin-right: 3px;"> 
-                    <p id="{{index}}-{{loop.index}}1" value="{{index}}">卖家id:<strong>{{index}}</strong></p><br/>
-                    <p id="{{index}}-{{loop.index}}2" value="{{item[0]}}">出售数量：<strong>{{item[0]}}</strong></p> <br/>
-                    <p id="{{index}}-{{loop.index}}3" value="{{item[1]}}">价格：<strong>{{item[1]}}</strong> elecCoin/度 </p><br/>
-                    <p id="{{index}}-{{loop.index}}4" value="{{item[2]}}">收款地址：<strong>{{item[2]}}</strong></p>
-                    <button class="btn" id="{{index}}-{{loop.index}}" >购买</button>
-                </div>
-             {% endfor %}
+    <header>
+        <div id="left">
+            <h1>电量交易</h1>
         </div>
-    {% endfor %}
+        <div id="right">
+            <a href="/login" id="login">登录、注册</a>
+            <a href="/personal">个人信息</a>
+        </div>
+        <div class="paddingPoint">
+            .
+        </div>
+    </header>
+    <div id="mainContent">
+        {% for index in sellingDetails %}
+        <div class="{{ index }}">
+            {% for item in sellingDetails.get(index) %}
+            <div id="{{loop.index}}" style="position: relative; margin-bottom: 10px;border:solid 1px black;float: left; margin-right: 3px;">
+                <p id="{{index}}-{{loop.index}}1" value="{{index}}">卖家id:<strong>{{index}}</strong></p><br />
+                <p id="{{index}}-{{loop.index}}2" value="{{item[0]}}">出售数量：<strong>{{item[0]}}</strong></p> <br />
+                <p id="{{index}}-{{loop.index}}3" value="{{item[1]}}">价格：<strong>{{item[1]}}</strong> elecCoin/度 </p><br />
+                <p id="{{index}}-{{loop.index}}4" value="{{item[2]}}">收款地址：<strong>{{item[2]}}</strong></p>
+                <button class="btn" id="{{index}}-{{loop.index}}">购买</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
 
-    {% if user %}
-    <span>userName: </span> {{user.get("userName")}}<br/>
-    <span>SystemID: </span>{{user.get("id")}}<br/>
-    <span>电力系统ID: </span>{{user.get("elecId")}}<br/>
-    <span>充币地址: </span>{{user.get("address")}}<br/>
-    <span>电力余额: </span>{{user.get("balance")}}<br/>
-    <span>elec币余额: </span>{{user.get("coinBalance")}}<br/>
-    {% endif %}
+        {% if user %}
+        <span>userName: </span> {{user.get("userName")}}<br />
+        <span>SystemID: </span>{{user.get("id")}}<br />
+        <span>电力系统ID: </span>{{user.get("elecId")}}<br />
+        <span>充币地址: </span>{{user.get("address")}}<br />
+        <span>电力余额: </span>{{user.get("balance")}}<br />
+        <span>elec币余额: </span>{{user.get("coinBalance")}}<br />
+        {% endif %}
 
-    <!-- 弹框底层蒙版 -->
-    <div class="mask">
+        <!-- 弹框底层蒙版 -->
+        <div class="mask">
+        </div>
+
+        <!-- 弹框-->
+
+        <div class="bomb_box">
+            <h4>购买</h4>
+            <form action="/api/userWhetherLogin" method="post">
+                <span>购买数量: </span><input type="text" name="" id="buyAmount">
+                <button id="buyButton">购买</button>
+            </form>
+        </div>
     </div>
-     
-    <!-- 弹框-->
-     
-    <div class="bomb_box">
-        <h4>购买</h4>
-        <form action="/api/userWhetherLogin" method="post">
-            <span>购买数量: </span><input type="text" name="" id="buyAmount">
-            <button id="buyButton">购买</button>
-        </form>
-    </div>
+    <footer>
+        <div class="paddingPoint">
+            .
+        </div>
+        <div>
+            <h1 style="text-align:center;">designed by Yapie</h1>
+        </div>
+    </footer>
 </body>
+
 </html>

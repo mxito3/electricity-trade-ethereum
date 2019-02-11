@@ -5,8 +5,8 @@ if __name__ == "__main__":
     coinbase_password = "123456"
     sellerId = 798457409
     buyerId = 654321
-    buyerAddress = "0xdc30f5c10f35807f08d6a82bdb9d3b15ab2a23b8"
-    buyerPassword = "123456" 
+    buyerAddress = "0x8273fc3E21E561750C8765dd3659bFA7b639b25c"
+    buyerPassword = "domore0325" 
     sellerAddress = "0xa13def3dfefa8dc8773dc2aaa155d203d5af8493"
     admin = "0xa13def3dfefa8dc8773dc2aaa155d203d5af8493"
     ethUtil = ethereumUtil()
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # ethUtil.setAdmin(admin)
 
     #upload elec
-    ethUtil.uploadElec(sellerId,1000)
+    # ethUtil.uploadElec(sellerId,1000)
     
     #get electricity amount
     print("卖家电量余额%d",ethUtil.getElectricityAmount(sellerId))
@@ -24,12 +24,12 @@ if __name__ == "__main__":
     #出售委托
     price = 4
     sellAmount = 54
-    for index in range(5):
-        ethUtil.announceSell(sellerId,sellAmount,price)
+    # for index in range(5):
+        # ethUtil.announceSell(sellerId,sellAmount,price)
 
 
     #获取委托的订单
-    print("出售的电量列表%s",ethUtil.getSellingElec(sellerId))
+    # print("出售的电量列表%s",ethUtil.getSellingElec(sellerId))
 
  
     #获取coin balance

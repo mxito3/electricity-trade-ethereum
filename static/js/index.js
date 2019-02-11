@@ -36,11 +36,17 @@ $(document).ready(function($) {
                 $.get(url,function(data,status,xhr){
                     if(status == "success")
                     {
-                        // console.log(data);
+                        // $(".mask").hide();
+                        // $(".bomb_box").hide();
+                        //隐藏登录注册　显示用户信息
+                        $('#userInfo').show();
+                        $('#login').hide();
+                        //发起交易        
+                        console.log(data);
                         buyerAddress=data.address;
                         buyerPassword="domore0325";
                         buyerId=data.elecId;
-                        let index=buttonId.split("-")[1]
+                        let index=buttonId.split("-")[1]-1
                         let amount=buyAmount;
                         let buyInfo = {};
                         buyInfo.buyerAddress = buyerAddress;
@@ -55,6 +61,9 @@ $(document).ready(function($) {
                         $.post(buyUrl,buyInfo,function(data,status,xhr){
                             if(status == "success")
                             {
+                                $(".mask").hide();
+                                $(".bomb_box").hide();
+                                alert("购买交易成功发起,待成功后查看余额")
                                 console.log("in post success"+data);
                             }
                             else

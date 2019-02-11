@@ -22,3 +22,22 @@
     padding:10px;
     border-radius:5px;
     }
+    /* #left
+    {
+        float: left;
+    } */
+    #right
+    {
+        padding-top:10px;
+        padding-right: 50px;
+        float: right;
+    }
+    .paddingPoint
+    {
+        clear: both;
+        visibility: hidden;
+    }
+    #userInfo
+    {
+        display:none;
+    }

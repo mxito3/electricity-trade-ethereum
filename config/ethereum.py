@@ -58,7 +58,8 @@ class ethereumUtil(object):
             if (hash):
                 print("购买交易发起成功hash值是" + self.web3.toHex(hash))
                 self.web3.personal.lockAccount(self.ourAddress)
-
+        else:
+            print("解锁失败")
     def getAnnounceLength(self,userId):
         return self.contract.functions.announceCount(userId).call()
     
