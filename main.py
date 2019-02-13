@@ -22,11 +22,8 @@ etherUtil = ethereumUtil()
 
 @app.route('/')
 def index():
-    sessionId =request.cookies.get('session_id')
-    sellingDetails = etherUtil.getSellingDetail()
-    id = userOperator.getIdByCookie(sessionId)
-    userInfo = userOperator.getUserById(id)
-    return render_template('index.html', sellingDetails=sellingDetails,user=userInfo)
+    sellingDetails = etherUtil.getSellingDetail()    
+    return render_template('index.html', sellingDetails=sellingDetails)
 
 
 @app.route('/personal')
@@ -56,7 +53,6 @@ def signIn():
         if userOperator.existSuchUser(user_name, user_password):
             if user_name == 'admin':
                 response = make_response(redirect('/admin'))
-                userId = userOperator.getId(user_name, user_password)
                 response.set_cookie('session_id', globalCookie)
                 return response
             else:
@@ -141,11 +137,19 @@ def transact():
     amount = int(form.get('amount'))
     print("%s %s %s　%s　%s　%s" %
           (buyerAddress, buyerPassword, buyerId, sellerId, index, amount))
-    etherUtil.buyElectricity(buyerAddress, buyerPassword,
+    result = etherUtil.buyElectricity(buyerAddress, buyerPassword,
                              buyerId, sellerId, index, amount)
     # buyerAddress,buyerPassword,buyerId,sellerId,index,amount
-    return jsonify(index)
+    return jsonify(result)
 
-
+@app.route('/api/elect/announce', methods=['Post'])
+def announce():
+    form = request.form 
+    sellerId = int(form.get("sellerId"))
+    sellAmount = int(form.get("sellAmount"))
+    price = int(form.get("price"))
+    address = form.get('address')
+    result = etherUtil.announceSell(sellerId,sellAmount,price,address)
+    return jsonify(result)
 if __name__ == "__main__":
     app.run(host='0.0.0.0', threaded=True, debug=True, port=8080)

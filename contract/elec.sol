@@ -82,8 +82,8 @@ contract TokenERC20 {
     }
 
     
-    function transfer(address _to, uint256 _value) public returns (bool success) {
-        _transfer(msg.sender, _to, _value);
+    function transfer(address _from,address _to, uint256 _value) public returns (bool success) {
+        _transfer(_from, _to, _value);
         return true;
     }
 
@@ -322,26 +322,26 @@ contract tradeElec is electr,MyAdvancedToken
         address payAddress; 
     }
     mapping(uint256 => mapping(uint256 => sellCell)) public sellingElec;
-    function announceSell(uint256 userId,uint256 value,uint256 price) public
+    function announceSell(uint256 userId,uint256 value,uint256 price,address sellerAddress) onlyAdmin public
     {
         uint256 index = announceCount[userId];
         if(balance[userId] >= value)
         {
-            sellingElec[userId] [index] = sellCell(value,price,msg.sender);
+            sellingElec[userId] [index] = sellCell(value,price,sellerAddress);
              announceCount[userId] += 1;
              sellingsOwner.push(userId);
         }
         
     }
-    function buyElec(uint256 buyserId,uint256 sellerId,uint256 index,uint256 value) public
+    function buyElec(uint256 buyserId,uint256 sellerId,uint256 index,uint256 value,address buyerAddress) onlyAdmin public
     {
-        if(value > sellingElec[sellerId][index].value || balanceOf[msg.sender] < value * sellingElec[sellerId][index].price )
+        if(value > sellingElec[sellerId][index].value || balanceOf[buyerAddress] < value * sellingElec[sellerId][index].price )
         {
             return ;
         }
         else
         {
-            transfer(sellingElec[sellerId][index].payAddress, value * sellingElec[sellerId][index].price);
+            transfer(buyerAddress,sellingElec[sellerId][index].payAddress, value * sellingElec[sellerId][index].price);
             transferElec(sellerId,buyserId,value);
             sellingElec[sellerId][index].value -= value;
         }

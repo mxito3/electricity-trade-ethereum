@@ -2,10 +2,8 @@ cd /home/yapie/github/electricity-trade-ethereum/chain && geth --rpc --rpccorsdo
 
 
 geth attach http://localhost:8545
-
-
 personal.unlockAccount(eth.coinbase,"123456")
-
+miner.start(1)
 
 admin.addPeer("enode://0a56b96c28029343e4ca3722b62ba28b4ce8a4befecb38dc6a0f7660b84bcefe4e16ceb77ecc4b77630864cdb4705ba1d73877230b26e5b3dba39cd0f3bdeda4@192.168.2.104:3333")
 

@@ -5,12 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/common.css')}}">
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="{{ url_for('static',filename='js/personal.js')}}"></script>
 </head>
 <body>
-     <span>userName: </span> {{user.get("userName")}}<br/>
-     <span>SystemID: </span>{{user.get("id")}}<br/>
-     <span>充币地址: </span>{{user.get("address")}}<br/>
-     <span>电力余额: </span>{{user.get("balance")}}<br/>
-     <span>elec币余额: </span>{{user.get("coinBalance")}}<br/>
+    <div id="personalInfo">
+            <span>userName: </span> {{user.get("userName")}}<br/>
+            <span>用户id: </span><span>{{user.get("id")}}</span><br/>
+            <span>电表号码: </span><span value= '{{user.get("elecId")}}' id="sellerId">{{user.get("elecId")}}</span><br/>
+            <span>充币地址: </span><span id="address" value="{{user.get('address')}}"></span>{{user.get("address")}}<br/>
+            <span>电力余额: </span>{{user.get("balance")}}度 <button id="announce">售卖电力</button><br/>
+            <span>elec币余额: </span>{{user.get("coinBalance")}}<br/>        
+    </div>
+     <!-- 弹框底层蒙版 -->
+     <div class="mask">
+        </div>
+        <!-- 弹框-->
+        <div class="bomb_box">
+            <h4>售卖电力</h4>
+            <form action="/api/elec/announce" method="post">
+                <span>售卖数量: </span><input type="text" name="" id="sellAmount"><br/>
+                <span>预期价格: </span><input type="text" name="" id="price"><br/>
+                <button id="sellButton" type="submit">出售</button>
+            </form>
+        </div>
 </body>
 </html>
